@@ -9,7 +9,7 @@ occurance_english = {
     'y': 1.9913847,    'z': 0.0746517
 }
 
-# As you can see, "etaoinshrdlu" are the 12 letters with most occurence.
+# As you can see, "etaoinshrdlu" are 12 of the 13 letters with most occurence.
 # The whitespaces are also very important to consider.
 
 def hex_to_bytes(hex_string: str) -> bytes:
