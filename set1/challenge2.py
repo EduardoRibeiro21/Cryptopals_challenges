@@ -35,7 +35,7 @@ def xor_buffers(a: bytes, b: bytes) -> bytes:
 def bytes_to_hex(b: bytes) -> str:
     res = ""
     for byte in b:
-        res += format(byte, "02x") # converts to hex with 2 digits
+        res += format(byte, "02x")       # converts to hex with 2 digits
     return res
 
 hex_string1 = "1c0111001f010100061a024b53535009181c"
