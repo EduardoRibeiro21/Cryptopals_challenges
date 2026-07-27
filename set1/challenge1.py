@@ -12,31 +12,6 @@ def hex_to_bin(s):
 
     return res
 
-def bin_to_hex(s):
-    bin_to_hex_dict = {
-        10: "a", 11: "b", 12: "c", 13: "d", 14: "e", 15: "f"
-    }
-
-    res = ""
-    count = 3
-    val = 0
-
-    for i in range(len(s)):
-        if s[i] == "1":
-            val += 2**count
-        count -= 1
-
-        if count < 0:
-            if val >= 10:
-                res += bin_to_hex_dict[val]
-            else:
-                res += str(val)
-            count = 3
-            val = 0
-
-        
-    return res
-
 def bin_to_base64(s):
     base64_dict = {
         0: "A", 1: "B", 2: "C", 3: "D", 4: "E", 5: "F", 6: "G", 7: "H",
@@ -65,14 +40,8 @@ def bin_to_base64(s):
         
     return res
 
-def xor_two_buffers(a, b):
-    res = ""
-    decoded1 = hex_to_bin(a)
-    decoded2 = hex_to_bin(b)
+s_hex = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"
 
-    for i in range(len(decoded1)):
-        res += str(int(decoded1[i]) ^ int(decoded2[i]))
-
-    result = bin_to_hex(res)
-
-    return result
+s_binary = hex_to_bin(s_hex)
+s_base64 = bin_to_base64(s_binary)
+print(s_base64)
