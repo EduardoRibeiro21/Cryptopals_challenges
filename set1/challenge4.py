@@ -12,18 +12,6 @@ occurance_english = {
 # As you can see, "etaoinshrdlu" are 12 of the 13 letters with most occurence.
 # The whitespaces are also very important to consider.
 
-def hex_to_bytes(hex_string: str) -> bytes:
-    return bytes.fromhex(hex_string)
-
-def xor_with_key(byte_list, key):
-    return bytes(b ^ key for b in byte_list)
-
-# This function does the same as the built-in method .decode("latin-1")
-def bytes_to_text(byte_list: bytes) -> str:
-    text = ""
-    for b in byte_list:
-        text += chr(b)      # each byte turns to a char
-    return text
 
 # score function based on "etaoin shrdlu"
 def score_plaintext(plaintext: str) -> int:
@@ -52,10 +40,9 @@ def score_plaintext(plaintext: str) -> int:
 
     return score
 
-
 def result(hex_string: str) -> list:
-    # 1) hex → bytes (manual)
-    cipher_bytes = hex_to_bytes(hex_string)
+    # 1) hex → bytes
+    cipher_bytes = bytes.fromhex(hex_string)
 
     best_score = -999999
     best_plaintext = None
@@ -63,10 +50,10 @@ def result(hex_string: str) -> list:
     # 2) testing all possible keys
     for key in range(256):
         # XOR
-        candidate_bytes = xor_with_key(cipher_bytes, key)
+        candidate_bytes = bytes(b ^ key for b in cipher_bytes)
 
         # bytes → text
-        plaintext = bytes_to_text(candidate_bytes)
+        plaintext = candidate_bytes.decode("latin-1")
 
         # scoring
         score = score_plaintext(plaintext)
@@ -77,5 +64,25 @@ def result(hex_string: str) -> list:
 
     return [best_score, best_plaintext]
 
-hex_string = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
-print(result(hex_string))
+
+def solve():
+    values = []
+
+    with open("challenge4.txt") as f:
+        for line in f:
+            hex_string = line.strip().lower()  # removing \n, spaces, and converting to lower-case
+            if not hex_string:                 # ignoring blank lines
+                continue
+            values.append(result(hex_string))
+
+    max_val = -float('inf')
+    index = 0
+
+    for i in range(len(values)):
+        if values[i][0] > max_val:
+            max_val = values[i][0]
+            index = i
+
+    return values[index]
+
+print(solve())
