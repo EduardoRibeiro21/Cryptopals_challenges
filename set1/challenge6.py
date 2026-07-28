@@ -11,4 +11,3 @@ def hamming_distance(text1: bytes, text2: bytes) -> int:
 
     return result
 
-print(hamming_distance(b"this is a test", b"wokka wokka!!!"))
