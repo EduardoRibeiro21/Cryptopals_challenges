@@ -26,25 +26,25 @@ def get_keysize() -> int:
     file_bytes = base64_to_bytes()
 
     for keysize in range(2, 41):
-        blocks = [file_bytes[i : i+keysize] for i in range(0, len(file_bytes), keysize)]
+        b1 = file_bytes[0 : keysize]
+        b2 = file_bytes[keysize : 2 * keysize]
+        b3 = file_bytes[2 * keysize : 3 * keysize]
+        b4 = file_bytes[3 * keysize : 4 * keysize]
 
-        # taking the first four blocks for each keysize
-        pairs = min(len(blocks) - 1, 4)
+        distances = [hamming_distance(b1, b2),
+                     hamming_distance(b1, b3),
+                     hamming_distance(b1, b4),
+                     hamming_distance(b2, b3),
+                     hamming_distance(b2, b4),
+                     hamming_distance(b3, b4)]
 
-        total = 0
-        for i in range(pairs):
-            total += hamming_distance(blocks[i], blocks[i+1])
-
-        normalized = total / (pairs * keysize)
-
+        normalized = (sum(distances) / len(distances)) / keysize
         scores.append((normalized, keysize))
 
     scores.sort()
     return scores[0][1]
 
-print(get_keysize())
-
-def transposing_blocks() -> str:
+def transposing_blocks() -> list:
     keysize = get_keysize()
     file_bytes = base64_to_bytes()
     columns = []
@@ -86,15 +86,15 @@ def score_plaintext(plaintext: str) -> int:
 
     return score
 
-def result() -> str:
+def decrypt_key() -> bytes:
     blocks = transposing_blocks()
-    scores = []
+    key_bytes = []
 
     for i in range(len(blocks)):
         cipher_bytes = blocks[i]
 
         best_score = -999999
-        best_plaintext = None
+        best_key = None
         
         # 2) testing all possible keys
         for key in range(256):
@@ -109,11 +109,23 @@ def result() -> str:
 
             if score > best_score:
                 best_score = score
-                best_plaintext = plaintext
+                best_key = key
 
-        scores.append([best_score, best_plaintext])
+        key_bytes.append(best_key)
 
-    return scores
+    return bytes(key_bytes)
 
-#print(result())
+def result():
+    key = decrypt_key()
+    file_bytes = base64_to_bytes()
+
+    plaintext_bytes = []
+
+    for i, c in enumerate(file_bytes):
+        plaintext_bytes.append(c ^ key[i % len(key)])
+
+    result = bytes(plaintext_bytes)
+    return result.decode("latin-1")
+
+print(result())
 
