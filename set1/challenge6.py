@@ -13,14 +13,17 @@ def hamming_distance(text1: bytes, text2: bytes) -> int:
 
     return result
 
+# To convert the file in bytes
 def base64_to_bytes() -> bytes:
 
-    # Ler ficheiro e remover newlines
+    # Reading the file and removing newlines
     with open("challenge6.txt") as f:
         text = f.read().replace("\n", "")
 
     return base64.b64decode(text)
 
+'''To obtain the keysize, we need all combinations of hamming_distances between
+4 consecutive blocks'''
 def get_keysize() -> int:
     scores = []
     file_bytes = base64_to_bytes()
@@ -60,6 +63,7 @@ def transposing_blocks() -> list:
 
     return columns
 
+# Score method used in another challenges
 def score_plaintext(plaintext: str) -> int:
     score = 0
 
@@ -115,6 +119,7 @@ def decrypt_key() -> bytes:
 
     return bytes(key_bytes)
 
+# With the key found, this becomes simple, right?
 def result():
     key = decrypt_key()
     file_bytes = base64_to_bytes()
@@ -128,4 +133,3 @@ def result():
     return result.decode("latin-1")
 
 print(result())
-
